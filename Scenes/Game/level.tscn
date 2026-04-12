@@ -2,6 +2,7 @@
 
 [ext_resource type="PackedScene" uid="uid://n8na6nkfmnme" path="res://Scenes/Audio/audio_stream_player.tscn" id="1_5xcqo"]
 [ext_resource type="Script" uid="uid://bmanbpeqbrkk1" path="res://Scripts/Core/TrackGenerator.cs" id="2_gayhk"]
+[ext_resource type="PackedScene" uid="uid://dqp4hku6gudds" path="res://Scenes/Prefabs/beat.tscn" id="3_gayhk"]
 
 [node name="Level" type="Node3D" unique_id=2071595859]
 
@@ -9,3 +10,7 @@
 
 [node name="Track" type="Node3D" parent="." unique_id=923723651]
 script = ExtResource("2_gayhk")
+NotePrefab = ExtResource("3_gayhk")
+
+[node name="Camera3D" type="Camera3D" parent="." unique_id=381050533]
+transform = Transform3D(-1, 2.262668e-08, -8.444392e-08, 0, 0.9659258, 0.25881904, 8.742278e-08, 0.25881904, -0.9659258, 0, 3, -7)

@@ -3,10 +3,13 @@ using Onrinto.Chart;
 
 public partial class GameManager : Node3D
 {
-    public TrackData CurrentTrack { get; private set; }
+    [Export] public float VisibleDistance = 150.0f;
+    [Export] public float PlayerSpeed = 1.5f;
+    public TrackData CurrentTrack { get; set; }
     public static GameManager Instance { get; private set; }
 
     public float CurrentAbsoluteSpeed { get; private set; }
+    public float FinalSpeed => CurrentAbsoluteSpeed * PlayerSpeed;
     public float CurrentAbsZ { get; private set; }
 
     private int absoluteSpeedPointIndexArrow = 0;
@@ -23,6 +26,11 @@ public partial class GameManager : Node3D
             return;
         }
 
+        if(absoluteSpeedPointIndexArrow > 0 && time < CurrentTrack.TickToSeconds(points[absoluteSpeedPointIndexArrow].Tick))
+        {
+            absoluteSpeedPointIndexArrow = 0;
+        }
+
         for(int i = absoluteSpeedPointIndexArrow; i < points.Count - 1; i++)
         {
             double pointTime_from = CurrentTrack.TickToSeconds(points[i].Tick);
@@ -34,8 +42,15 @@ public partial class GameManager : Node3D
 
                 if(points[i].IsLinear)
                 {
-                    double t = (time - pointTime_from) / (pointTime_to - pointTime_from);
-                    CurrentAbsoluteSpeed = Mathf.Lerp(points[i].Speed, points[i + 1].Speed, (float)t);
+                    if (pointTime_to <= pointTime_from)
+                    {
+                        CurrentAbsoluteSpeed = points[i].Speed;
+                    }
+                    else
+                    {
+                        double t = (time - pointTime_from) / (pointTime_to - pointTime_from);
+                        CurrentAbsoluteSpeed = Mathf.Lerp(points[i].Speed, points[i + 1].Speed, (float)t);
+                    }
                 }
                 else
                 {

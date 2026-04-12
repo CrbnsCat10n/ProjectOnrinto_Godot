@@ -10,7 +10,21 @@ public partial class MusicClock : AudioStreamPlayer
 	public override void _Ready()
 	{
 		Instance = this;
-		if (Stream == null) GD.PrintErr("MusicClock: No Audio File?");
+	}
+
+	public void LoadMusic(string path)
+	{
+		if (string.IsNullOrEmpty(path)) return;
+		
+		var stream = GD.Load<AudioStream>(path);
+		if (stream != null)
+		{
+			Stream = stream;
+		}
+		else
+		{
+			GD.PrintErr($"Failed to load music at: {path}");
+		}
 	}
 
 	public override void _Process(double delta)

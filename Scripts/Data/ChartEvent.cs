@@ -13,7 +13,7 @@ public class TempoPoint
 	public float BPM { get; set; }
 
 	[JsonConstructor]
-	public TempoPoint(double tick, float bpm, bool isLinear)
+	public TempoPoint(double tick, float bpm)
 	{
 		Tick = tick;
 		BPM = bpm;
@@ -46,7 +46,7 @@ public class ChartEvent
 	public double Tick { get; set; }
 	public Vector2 Position { get; set; }
 	public double HitTime { get; set; }
-	public double HitAbsZ { get; set; }
+	public float HitAbsZ { get; set; }
 
 	public ChartEvent(EventType type, double tick, Vector2 position)
 	{

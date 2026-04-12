@@ -4,13 +4,14 @@ using Onrinto.Chart;
 using System.Text.Json.Serialization;
 using System.Linq;
 using System.Collections.Generic;
-using System.Security.Cryptography.X509Certificates;
 
 public partial class TrackGenerator : Node3D
 {
 	TrackData track = new TrackData();
 	List<ChartEvent> _notes = new List<ChartEvent>();
 	[Export] public PackedScene NotePrefab;
+
+	private int _spawnIndex = 0;
 
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
@@ -44,21 +45,46 @@ public partial class TrackGenerator : Node3D
 		}
 
 		_notes = track.Events.OrderBy(e => e.Tick).ToList(); // Ensure events are sorted by time.
+		track.Initialize(); // Pre-calculate hit times and positions.
+		GameManager.Instance.CurrentTrack = track; // Set the current track in the game manager.
+
+		// Load and play music
+		if (!string.IsNullOrEmpty(track.MusicPath))
+		{
+			MusicClock.Instance.LoadMusic(track.MusicPath);
+			MusicClock.Instance.Play();
+		}
 	}
 
 	private void spawnNote(ChartEvent e) {
 		var noteInstance = NotePrefab.Instantiate<NoteObject>();
 
-		float speed = 20.0f;
-		double hitTime = (double)(e.Tick / track.TicksPerBeat * 60.0 / track.BPM);
-		float initialZ = (float)(hitTime * speed);
-
-		noteInstance.Initialize(e, hitTime, initialZ); // Initial Z position
+		noteInstance.Initialize(e);
 		AddChild(noteInstance);
 	}
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
 	public override void _Process(double delta)
 	{
-		
+		if (track == null) return;
+
+		float currentZ = GameManager.Instance.CurrentAbsZ;
+		float spawnThreshold = GameManager.Instance.VisibleDistance;
+
+		while (_spawnIndex < _notes.Count)
+		{
+			var e = _notes[_spawnIndex];
+			float visualDist = (e.HitAbsZ - currentZ) * GameManager.Instance.FinalSpeed;
+
+			if (visualDist <= spawnThreshold)
+			{
+				// Only spawn if it hasn't been missed for too long
+				if (e.HitTime - MusicClock.Instance.CurrentTime >= -0.5)
+				{
+					spawnNote(e);
+				}
+				_spawnIndex++;
+			}
+			else break;
+		}
 	}
 }

@@ -6,6 +6,7 @@ namespace Onrinto.Chart;
 
 public class TrackData
 {
+    public string MusicPath { get; set; }
     public int BPM { get; set; }
     public double Offset { get; set; }
     public double TicksPerBeat { get; set; }
@@ -107,6 +108,10 @@ public class TrackData
         if(point.IsLinear && idx < speedPoints.Count - 1)
         {
             double nextTime = TickToSeconds(speedPoints[idx + 1].Tick);
+            if (nextTime <= pointTime) 
+            {
+                return cachedZ + (float)deltaTime * point.Speed;
+            }
             float t = (float)((time - pointTime) / (nextTime - pointTime));
             float currentSpeed = Mathf.Lerp(point.Speed, speedPoints[idx + 1].Speed, t);
             return cachedZ + (float)deltaTime * (point.Speed + currentSpeed) * 0.5f;
