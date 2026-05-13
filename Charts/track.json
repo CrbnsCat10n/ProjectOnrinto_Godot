@@ -47,6 +47,18 @@
       "Type": "Beat",
       "Tick": 1440,
       "Position": { "X": 0.0, "Y": 0.0 }
+    },
+    {
+      "$type": "Onrinto.Chart.ChartEvent",
+      "Type": "Beat",
+      "Tick": 1920,
+      "Position": { "X": 0.0, "Y": 0.0 }
+    },
+    {
+      "$type": "Onrinto.Chart.ChartEvent",
+      "Type": "Beat",
+      "Tick": 2400,
+      "Position": { "X": 0.0, "Y": 0.0 }
     }
   ]
 }

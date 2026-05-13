@@ -11,7 +11,8 @@ public partial class GameManager : Node3D
     public float CurrentAbsoluteSpeed { get; private set; }
     public float FinalSpeed => CurrentAbsoluteSpeed * PlayerSpeed;
     public float CurrentAbsZ { get; private set; }
-
+    public float JumpDuration { get; private set; } = 0.5f;
+    public float JumpHeight { get; private set; } = 1.0f;
     private int absoluteSpeedPointIndexArrow = 0;
 
     private void UpdateAbsoluteState(double time)

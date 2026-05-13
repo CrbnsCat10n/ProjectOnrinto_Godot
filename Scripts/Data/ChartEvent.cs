@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 
 namespace Onrinto.Chart;
 
-public enum EventType { Hole, Obstacle, Beat, Catch, Through, Jump, Dash, Float };
+public enum EventType { Hole, Obstacle, Beat, Catch, Through, Jump, Dash};
 public enum AnimationType { Linear, Sin, Back };
 
 public class TempoPoint

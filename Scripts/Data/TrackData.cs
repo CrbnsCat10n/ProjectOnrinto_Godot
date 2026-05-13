@@ -18,6 +18,7 @@ public class TrackData
 
     public List<double> TempoSecondsTable { get; private set; } = new List<double>();
     public List<float> RelativeZTable { get; private set; } = new List<float>();
+    
 
     public void Initialize()
     {
