@@ -1,0 +1,19 @@
+[gd_scene format=3 uid="uid://dsamu5owtb0fr"]
+
+[ext_resource type="Script" uid="uid://d03km6nemwk2a" path="res://Scripts/Player/PlayerController.cs" id="1_xxwah"]
+
+[sub_resource type="SphereMesh" id="SphereMesh_xxwah"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_qasth"]
+
+[node name="Player" type="Node3D" unique_id=965094095]
+script = ExtResource("1_xxwah")
+MouseSensitivity = 0.005
+
+[node name="VisualObject" type="MeshInstance3D" parent="." unique_id=823983999]
+mesh = SubResource("SphereMesh_xxwah")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=495286883]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0037201643, 0, 0)
+shape = SubResource("SphereShape3D_qasth")
+debug_color = Color(0.14633003, 0.48590285, 0.7032069, 1)

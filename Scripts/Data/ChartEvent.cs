@@ -1,3 +1,4 @@
+// 定义谱面事件、节奏点、速度点以及动画事件的数据结构。
 using Godot;
 using System;
 using System.Text.Json.Serialization;
@@ -7,11 +8,13 @@ namespace Onrinto.Chart;
 public enum EventType { Hole, Obstacle, Beat, Catch, Through, Jump, Dash, Float };
 public enum AnimationType { Linear, Sin, Back };
 
+// 表示一个 BPM 变化点。
 public class TempoPoint
 {
 	public double Tick { get; set; }
 	public float BPM { get; set; }
 
+	// 使用谱面数据创建节奏点。
 	[JsonConstructor]
 	public TempoPoint(double tick, float bpm)
 	{
@@ -20,12 +23,14 @@ public class TempoPoint
 	}
 }
 
+// 表示一个速度变化点。
 public class SpeedPoint
 {
 	public double Tick { get; set; }
 	public float Speed { get; set; }
 	public bool IsLinear { get; set; }
 
+	// 使用谱面数据创建速度点。
 	[JsonConstructor]
 	public SpeedPoint(double tick, float speed, bool isLinear)
 	{
@@ -48,6 +53,7 @@ public class ChartEvent
 	public double HitTime { get; set; }
 	public float HitAbsZ { get; set; }
 
+	// 创建一个普通谱面事件。
 	public ChartEvent(EventType type, double tick, Vector2 position)
 	{
 		Type = type;
@@ -70,6 +76,7 @@ public class AnimatedEvent : ChartEvent
 
 	public float RelativeSpeed { get; set; }
 
+	// 创建一个带有移动参数的谱面事件。
 	public AnimatedEvent(
 		EventType type,
 		double tick,

@@ -1,3 +1,4 @@
+// 管理全局游戏状态，并根据谱面速度计算玩家当前的移动进度。
 using Godot;
 using Onrinto.Chart;
 
@@ -14,6 +15,7 @@ public partial class GameManager : Node3D
 
     private int absoluteSpeedPointIndexArrow = 0;
 
+    // 根据音乐时间查找并计算当前的绝对速度
     private void UpdateAbsoluteState(double time)
     {
         var points = CurrentTrack.AbsoluteSpeedPoints;
@@ -64,7 +66,7 @@ public partial class GameManager : Node3D
         CurrentAbsoluteSpeed = points[^1].Speed;
     }
 
-    // Called when the node enters the scene tree for the first time.
+    // 初始化全局单例并设置处理优先级
     public override void _Ready()
     {
         if (Instance != null){ QueueFree(); return; }
@@ -73,7 +75,7 @@ public partial class GameManager : Node3D
         ProcessPriority = -100;
     }
 
-    // Called every frame. 'delta' is the elapsed time since the previous frame.
+    // 每帧更新全局速度和谱面移动进度
     public override void _Process(double delta)
     {
         double tNow = MusicClock.Instance.CurrentTime;

@@ -1,3 +1,4 @@
+// 保存谱面数据，并将 tick、节奏和速度点预计算为运行时可用的数据。
 using System.Collections.Generic;
 using System.Linq;
 using Godot;
@@ -19,6 +20,7 @@ public class TrackData
     public List<double> TempoSecondsTable { get; private set; } = new List<double>();
     public List<float> RelativeZTable { get; private set; } = new List<float>();
 
+	// 初始化时间和路程缓存，并计算事件的命中数据。
     public void Initialize()
     {
         InitializeTempoTable();
@@ -33,6 +35,7 @@ public class TrackData
 
     public void InitializeTempoTable()
     {
+		// 根据 BPM 变化点建立累计时间表。
         TempoSecondsTable.Clear();
         if(TempoPoints == null || TempoPoints.Count == 0) return;
 
@@ -51,6 +54,7 @@ public class TrackData
 
     public void InitializeRelativeZTable(List<SpeedPoint> speedPoints)
     {
+		// 根据速度点建立累计 Z 路程表。
         RelativeZTable.Clear();
         if(speedPoints == null || speedPoints.Count == 0) return;
 
@@ -62,13 +66,13 @@ public class TrackData
         {
             double timeDelta = TickToSeconds(speedPoints[i + 1].Tick) - TickToSeconds(speedPoints[i].Tick);
             
-            if(speedPoints[i].IsLinear)
+			if(speedPoints[i].IsLinear)
             {
                 cachedZ += (float)timeDelta * (speedPoints[i].Speed + speedPoints[i + 1].Speed) * 0.5f;
             }
-            else
-            {
-                cachedZ += (float)timeDelta * speedPoints[i].Speed;
+			else
+			{
+				cachedZ += (float)timeDelta * speedPoints[i].Speed;
             }
             RelativeZTable.Add(cachedZ);
         }
@@ -76,10 +80,11 @@ public class TrackData
 
     public double TickToSeconds(double tick)
     {
+		// 将 tick 按当前 BPM 区间换算为秒数。
         if(TempoPoints == null || TempoPoints.Count == 0) 
             return tick / TicksPerBeat * 60.0 / BPM;
 
-        int idx = 0;
+		int idx = 0;
         for(int i = 0; i < TempoPoints.Count; i++)
         {
             if(tick >= TempoPoints[i].Tick) idx = i;
@@ -91,6 +96,7 @@ public class TrackData
 
     public float GetZ(double time, List<SpeedPoint> speedPoints, List<float> zTable)
     {
+		// 根据时间和速度表计算当前位置的 Z 路程。
         if(speedPoints == null || speedPoints.Count == 0) return 0.0f;
 
         int idx = 0;
@@ -105,7 +111,7 @@ public class TrackData
         double pointTime = TickToSeconds(point.Tick);
         double deltaTime = time - pointTime;
 
-        if(point.IsLinear && idx < speedPoints.Count - 1)
+		if(point.IsLinear && idx < speedPoints.Count - 1)
         {
             double nextTime = TickToSeconds(speedPoints[idx + 1].Tick);
             if (nextTime <= pointTime) 

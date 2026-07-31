@@ -1,22 +1,33 @@
+// 读取谱面数据，预计算事件位置，并按音乐进度生成音符实例。
 using Godot;
 using System.Text.Json;
 using Onrinto.Chart;
 using System.Text.Json.Serialization;
 using System.Linq;
 using System.Collections.Generic;
+using Onrinto.Core;
 
 public partial class TrackGenerator : Node3D
 {
 	TrackData track = new TrackData();
 	List<ChartEvent> _notes = new List<ChartEvent>();
 	[Export] public PackedScene NotePrefab;
+	[Export] public NodePath JudgmentSystemPath;
+	private JudgmentSystem _judgmentSystem;
 
 	private int _spawnIndex = 0;
 
-	// Called when the node enters the scene tree for the first time.
+	// 加载谱面、初始化计算数据并开始播放音乐。
 	public override void _Ready()
 	{
-		//Load chart data.
+		// 从场景路径解析判定系统节点。
+		_judgmentSystem = GetNodeOrNull<JudgmentSystem>(JudgmentSystemPath);
+		if (_judgmentSystem == null)
+		{
+			GD.PrintErr("TrackGenerator: JudgmentSystem path is not set or invalid.");
+		}
+
+		// 加载并解析谱面数据。
 		string chart_path = "res://Charts/track.json";
 		if (!FileAccess.FileExists(chart_path))
 		{
@@ -48,7 +59,7 @@ public partial class TrackGenerator : Node3D
 		track.Initialize(); // Pre-calculate hit times and positions.
 		GameManager.Instance.CurrentTrack = track; // Set the current track in the game manager.
 
-		// Load and play music
+		// 加载并播放谱面对应的音乐
 		if (!string.IsNullOrEmpty(track.MusicPath))
 		{
 			MusicClock.Instance.LoadMusic(track.MusicPath);
@@ -57,12 +68,17 @@ public partial class TrackGenerator : Node3D
 	}
 
 	private void spawnNote(ChartEvent e) {
+		// 创建并初始化一个音符实例
 		var noteInstance = NotePrefab.Instantiate<NoteObject>();
 
 		noteInstance.Initialize(e);
 		AddChild(noteInstance);
+
+		// 生成完成后交给判定系统维护活动音符列表
+		_judgmentSystem?.RegisterNote(noteInstance);
 	}
-	// Called every frame. 'delta' is the elapsed time since the previous frame.
+
+	// 每帧检查是否有音符进入可见范围
 	public override void _Process(double delta)
 	{
 		if (track == null) return;
@@ -70,6 +86,7 @@ public partial class TrackGenerator : Node3D
 		float currentZ = GameManager.Instance.CurrentAbsZ;
 		float spawnThreshold = GameManager.Instance.VisibleDistance;
 
+		// 连续生成所有已经进入可见范围的事件
 		while (_spawnIndex < _notes.Count)
 		{
 			var e = _notes[_spawnIndex];
@@ -77,7 +94,7 @@ public partial class TrackGenerator : Node3D
 
 			if (visualDist <= spawnThreshold)
 			{
-				// Only spawn if it hasn't been missed for too long
+				// 跳过已经错过太久的事件
 				if (e.HitTime - MusicClock.Instance.CurrentTime >= -0.5)
 				{
 					spawnNote(e);
