@@ -3,22 +3,35 @@
 [ext_resource type="PackedScene" uid="uid://n8na6nkfmnme" path="res://Scenes/Audio/audio_stream_player.tscn" id="1_5xcqo"]
 [ext_resource type="Script" uid="uid://bmanbpeqbrkk1" path="res://Scripts/Core/TrackGenerator.cs" id="2_gayhk"]
 [ext_resource type="PackedScene" uid="uid://dqp4hku6gudds" path="res://Scenes/Prefabs/beat.tscn" id="3_gayhk"]
+[ext_resource type="PackedScene" uid="uid://d0tb2yksvy84o" path="res://Scenes/Prefabs/catch.tscn" id="4_752co"]
 [ext_resource type="PackedScene" uid="uid://dsamu5owtb0fr" path="res://Scenes/Game/player.tscn" id="4_to5rb"]
 [ext_resource type="Script" uid="uid://criv78abnidwl" path="res://Scripts/Core/JudgmentSystem.cs" id="5_judgment"]
+[ext_resource type="PackedScene" uid="uid://cvqlwcq8alx8q" path="res://Scenes/Prefabs/through.tscn" id="5_r6akh"]
+
+[sub_resource type="Environment" id="Environment_notes"]
+glow_enabled = true
+glow_intensity = 1.2
+glow_bloom = 0.15
 
 [node name="Level" type="Node3D" unique_id=2071595859]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=2113322076]
+environment = SubResource("Environment_notes")
 
 [node name="AudioStreamPlayer" parent="." unique_id=1188161767 instance=ExtResource("1_5xcqo")]
 
 [node name="Track" type="Node3D" parent="." unique_id=923723651]
 script = ExtResource("2_gayhk")
-NotePrefab = ExtResource("3_gayhk")
+BeatPrefab = ExtResource("3_gayhk")
+CatchPrefab = ExtResource("4_752co")
+ThroughPrefab = ExtResource("5_r6akh")
 JudgmentSystemPath = NodePath("../JudgmentSystem")
 
 [node name="Camera3D" type="Camera3D" parent="." unique_id=381050533]
 transform = Transform3D(-1, 2.262668e-08, -8.444392e-08, 8.407095e-10, 0.96837014, 0.24951816, 8.7418734e-08, 0.24951816, -0.96837014, 0, 3, -4)
 
 [node name="Player" parent="." unique_id=965094095 instance=ExtResource("4_to5rb")]
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0)
 
 [node name="JudgmentSystem" type="Node" parent="." unique_id=624540931]
 script = ExtResource("5_judgment")

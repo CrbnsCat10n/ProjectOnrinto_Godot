@@ -1,11 +1,11 @@
-// 处理玩家的横向移动，并向外广播移动和打击输入。
+// 处理玩家的横向移动，并向外广播移动和打击输入
 using Godot;
 using Onrinto.Core;
 
 public partial class PlayerController : Node3D
 {
 	[Signal]
-	public delegate void HitRequestedEventHandler(float playerX);
+	public delegate void HitRequestedEventHandler(int keyType);
 
 	[Signal]
 	public delegate void HorizontalPositionChangedEventHandler(float playerX);
@@ -41,7 +41,7 @@ public partial class PlayerController : Node3D
 		// 广播打击
 		if (inputEvent is InputEventKey hitKey && hitKey.Pressed && !hitKey.Echo && IsLetterKey(hitKey))
 		{
-			EmitSignal(SignalName.HitRequested, _targetX);
+			EmitSignal(SignalName.HitRequested, (int)KeyType.Other);
 		}
 
 		// 退出捕获模式

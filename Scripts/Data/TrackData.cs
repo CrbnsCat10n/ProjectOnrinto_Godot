@@ -1,4 +1,4 @@
-// 保存谱面数据，并将 tick、节奏和速度点预计算为运行时可用的数据。
+// 保存谱面数据，并将 tick、节奏和速度点预计算为运行时可用的数据
 using System.Collections.Generic;
 using System.Linq;
 using Godot;
@@ -11,7 +11,6 @@ public class TrackData
     public int BPM { get; set; }
     public double Offset { get; set; }
     public double TicksPerBeat { get; set; }
-    public double BeatDuration => 60.0 / BPM;
     public List<ChartEvent> Events { get; set; } = new List<ChartEvent>();
     public List<TempoPoint> TempoPoints { get; set; } = new List<TempoPoint>();
     public List<SpeedPoint> RelativeSpeedPoints { get; set; } = new List<SpeedPoint>();

@@ -1,0 +1,25 @@
+[gd_scene format=3 uid="uid://cvqlwcq8alx8q"]
+
+[ext_resource type="Script" uid="uid://cebv78brtevs5" path="res://Scripts/GameObjects/ThroughNote.cs" id="1_iwsm6"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_through"]
+albedo_color = Color(0.18, 0.45, 1, 1)
+metallic = 0.15
+roughness = 0.25
+emission_enabled = true
+emission = Color(0.74509805, 0.25490198, 0.32156864, 1)
+emission_energy_multiplier = 4.0
+
+[sub_resource type="BoxMesh" id="BoxMesh_ujowb"]
+material = SubResource("StandardMaterial3D_through")
+
+[node name="Node3D" type="Node3D" unique_id=93946162]
+script = ExtResource("1_iwsm6")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1332571095]
+transform = Transform3D(0.63639605, -0.63639605, 0, 0.44999996, 0.44999996, -0.63639605, 0.44999996, 0.44999996, 0.63639605, 0, 0, 0)
+mesh = SubResource("BoxMesh_ujowb")
+
+[node name="Label3D" type="Label3D" parent="." unique_id=462726325]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9466002, 0)
+font_size = 100

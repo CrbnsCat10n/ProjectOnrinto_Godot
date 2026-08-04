@@ -1,4 +1,4 @@
-// 读取谱面数据，预计算事件位置，并按音乐进度生成音符实例。
+// 读取谱面数据，预计算事件位置，并按音乐进度生成音符实例
 using Godot;
 using System.Text.Json;
 using Onrinto.Chart;
@@ -11,7 +11,9 @@ public partial class TrackGenerator : Node3D
 {
 	TrackData track = new TrackData();
 	List<ChartEvent> _notes = new List<ChartEvent>();
-	[Export] public PackedScene NotePrefab;
+	[Export] public PackedScene BeatPrefab;
+	[Export] public PackedScene CatchPrefab;
+	[Export] public PackedScene ThroughPrefab;
 	[Export] public NodePath JudgmentSystemPath;
 	private JudgmentSystem _judgmentSystem;
 
@@ -69,8 +71,12 @@ public partial class TrackGenerator : Node3D
 
 	private void spawnNote(ChartEvent e) {
 		// 创建并初始化一个音符实例
-		var noteInstance = NotePrefab.Instantiate<NoteObject>();
-
+		var noteInstance = e.Type switch{
+			EventType.Beat => BeatPrefab.Instantiate<NoteObject>(),
+			EventType.Catch => CatchPrefab.Instantiate<NoteObject>(),
+			EventType.Through => ThroughPrefab.Instantiate<NoteObject>(),
+			_ => throw new JsonException($"Unsupported note type: {e.Type}")
+		};
 		noteInstance.Initialize(e);
 		AddChild(noteInstance);
 
